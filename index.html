@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Day Raissya</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --pink-bg: #fff0f5;
+            --main-pink: #ff85a2;
+            --dark-pink: #d63384;
+            --cake-color: #fbdce2;
+        }
+
+        body {
+            background-color: var(--pink-bg);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* --- Welcome Screen --- */
+        #setup-section {
+            padding: 20px;
+            animation: fadeIn 1s ease;
+        }
+
+        .welcome-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(255, 133, 162, 0.2);
+            border: 3px solid var(--main-pink);
+            max-width: 350px;
+        }
+
+        .btn-start, .btn-next, .btn-gift {
+            background: var(--main-pink);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(255, 133, 162, 0.4);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-gift {
+            background: #d63384;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            padding: 10px 25px;
+        }
+
+        .btn-next {
+            position: fixed;
+            bottom: 50px;
+            z-index: 200;
+            animation: bounce 2s infinite;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
+            40% {transform: translateX(-50%) translateY(-10px);}
+            60% {transform: translateX(-50%) translateY(-5px);}
+        }
+
+        /* --- Cake Design --- */
+        .cake {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
+
+        .layer {
+            position: absolute;
+            width: 200px;
+            border-radius: 15px 15px 5px 5px;
+        }
+
+        .layer-bottom { height: 70px; background: #f4a7bb; bottom: 0; }
+        .layer-middle { height: 60px; background: #ffc2d1; bottom: 50px; width: 170px; left: 15px; }
+        .layer-top { height: 50px; background: var(--cake-color); bottom: 95px; width: 130px; left: 35px; }
+
+        .icing {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 15px;
+            background: white; border-radius: 15px 15px 0 0;
+        }
+
+        .candles-container {
+            position: absolute;
+            bottom: 145px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            z-index: 20;
+        }
+
+        .candle {
+            width: 8px;
+            height: 30px;
+            background: #ff5e62;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .flame {
+            width: 12px; height: 18px;
+            background: #ffdb3a;
+            border-radius: 50% 50% 20% 20%;
+            position: absolute;
+            top: -20px; left: -2px;
+            box-shadow: 0 0 10px #ffdb3a, 0 0 20px #f90;
+            animation: flicker 0.1s infinite alternate;
+        }
+
+        /* --- Photo Heart Animation --- */
+        #photo-heart-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100vw;
+            height: 100vh;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .heart-photo {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: all 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 5;
+        }
+
+        .heart-photo.show {
+            opacity: 1;
+        }
+
+        /* --- Card --- */
+        #card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 25px;
+            max-width: 320px;
+            border: 2px dashed var(--main-pink);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .hidden { display: none; }
+        .status-text { margin-top: 35px; color: #888; font-style: italic; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes flicker { from { transform: scale(1) rotate(-2deg); } to { transform: scale(1.1) rotate(2deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="setup-section">
+        <div class="welcome-card">
+            <h2 style="color: var(--dark-pink); font-size: 1.4rem;">Hai Cantik! ✨</h2>
+            <p>Ada kejutan spesial buat <b>Raissya Maulidina yang paling cantik</b> di tanggal 22 Maret.</p>
+            <p style="font-size: 0.9rem; color: #666;">Tolong nyalakan mic untuk membukanya!</p>
+            <br>
+            <button class="btn-start" onclick="startExperience()">Buka Kejutan 🎁</button>
+        </div>
+    </div>
+
+    <div id="cake-section" class="hidden">
+        <h2 style="color: var(--dark-pink);">Tiup lilinnya yaa cantikk! 🎂</h2>
+        <div class="cake">
+            <div class="candles-container">
+                <div class="candle"><div class="flame"></div></div>
+                <div class="candle"><div class="flame"></div></div>
+                <div class="candle"><div class="flame"></div></div>
+            </div>
+            <div class="layer layer-bottom"><div class="icing"></div></div>
+            <div class="layer layer-middle"><div class="icing"></div></div>
+            <div class="layer layer-top"><div class="icing"></div></div>
+        </div>
+        <p class="status-text">Dekatkan mic ke mulut dan tiup sekuat tenaga!</p>
+    </div>
+
+    <div id="photo-heart-container" class="hidden"></div>
+
+    <button id="btn-next-step" class="btn-next hidden" onclick="showFinalCard()">Lihat Pesan ✨</button>
+
+    <div id="card" class="hidden">
+        <h1 style="font-size: 1.5rem;">Happy Birthday, <br>Raissya Maulidina! 💖</h1>
+        <p><b>22 Maret 2009 — 2026</b></p>
+        <hr style="border:0; border-top:1px solid #eee; margin:15px 0;">
+        <p>Untuk perempuan <b>paling cantik</b>...</p>
+        <p>Semoga di usiamu yang baru ini, setiap harimu penuh dengan tawa dan kebahagiaan. Teruslah menjadi inspirasi!
+          dan semoga kita bisa bertemu di masa depan ya sayang kuu❤️❤️
+        </p>
+        
+        <a href="https://ig.me/m/abum_sdw2?text=haii%20ganteng%20manaa%20ni%20hadia%20nyaa" target="_blank" class="btn-gift">
+            Lihat Hadiah 🎁
+        </a>
+        <br>
+        <button class="btn-start" style="padding: 8px 20px; font-size: 0.7rem; margin-top: 15px; background: none; border: 1px solid pink; color: pink; box-shadow: none;" onclick="location.reload()">Ulangi ✨</button>
+    </div>
+
+    <script>
+        const flames = document.querySelectorAll('.flame');
+        let stream;
+
+        const photoUrls = [
+            'https://image2url.com/r2/default/images/1773341001889-ca0543e9-54d1-41ba-b445-927d3a98a01a.jpg',
+            'https://image2url.com/r2/default/images/1773341276908-9c7cfe7c-374e-468e-a117-f977a516075a.jpg',
+            'https://image2url.com/r2/default/images/1773341313463-ff6dca5b-ce46-46c0-bc8f-f5dc8d26623a.jpg',
+            'https://image2url.com/r2/default/images/1773341366061-39f5b340-c480-4372-92ff-a4345fe5f5f3.jpg',
+            'https://image2url.com/r2/default/images/1773341436519-606314fa-66b0-4b64-b172-ed205285350e.jpg',
+            'https://image2url.com/r2/default/images/1773341477331-721ed1cd-97ab-465c-bef8-9baceba110a3.jpg',
+            'https://image2url.com/r2/default/images/1773341510401-464b95b4-8f11-4d5b-9ec1-d92cfcb07cac.jpg',
+            'https://image2url.com/r2/default/images/1773341544887-50eee7e3-95ed-4268-9664-8703cdac8527.jpg',
+            'https://image2url.com/r2/default/images/1773341585668-2bbe51df-a02a-4591-8fe3-d7f2edfa37d7.jpg',
+            'https://image2url.com/r2/default/images/1773341638056-cab793b9-21b3-4118-999c-2a49da38872e.jpg',
+            'https://image2url.com/r2/default/images/1773402430697-b267068e-d89d-4a0f-bbb9-65f2c3e08d1d.jpg',
+            'https://image2url.com/r2/default/images/1773402478005-2bf9856a-6f22-402b-86e2-a2d62f64d17e.jpg',
+            'https://image2url.com/r2/default/images/1773402579019-557a5d08-1a43-442f-a35c-35b3a5335d43.jpg',
+            'https://image2url.com/r2/default/images/1773402621872-1a14caaf-ea59-4ec0-a32e-a8e12620dad7.jpg',
+            'https://image2url.com/r2/default/images/1773409176270-dab6970f-8fb6-441c-9bb2-87153e961574.jpg',
+            'https://image2url.com/r2/default/images/1773341724746-3642f606-e63d-4213-b3bc-4583673f4404.jpg'
+        ];
+
+        function createPhotoHeart() {
+            const container = document.getElementById('photo-heart-container');
+            container.classList.remove('hidden');
+            
+            const points = [];
+            for (let t = 0; t <= Math.PI * 2; t += 0.4) {
+                const x = 16 * Math.pow(Math.sin(t), 3);
+                const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+                points.push({ x: x * 10, y: y * 10 }); 
+            }
+
+            points.forEach((point, i) => {
+                const img = document.createElement('img');
+                img.src = photoUrls[i % photoUrls.length];
+                img.className = 'heart-photo';
+                img.style.left = '50%';
+                img.style.top = '50%';
+                container.appendChild(img);
+
+                setTimeout(() => {
+                    img.classList.add('show');
+                    img.style.left = `calc(50% + ${point.x}px)`;
+                    img.style.top = `calc(50% + ${point.y}px)`;
+                    img.style.transform = `translate(-50%, -50%) rotate(${Math.random() * 20 - 10}deg)`;
+                }, i * 300); 
+            });
+
+            const totalAnimationTime = points.length * 300;
+            setTimeout(() => {
+                const btnNext = document.getElementById('btn-next-step');
+                btnNext.classList.remove('hidden');
+                btnNext.style.animation = 'fadeIn 1s forwards, bounce 2s infinite';
+            }, totalAnimationTime + 500);
+        }
+
+        async function startExperience() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                document.getElementById('setup-section').classList.add('hidden');
+                document.getElementById('cake-section').classList.remove('hidden');
+
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const analyser = audioContext.createAnalyser();
+                const source = audioContext.createMediaStreamSource(stream);
+                source.connect(analyser);
+                analyser.fftSize = 256;
+                const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                function detectBlow() {
+                    if (!stream.active) return;
+                    analyser.getByteFrequencyData(dataArray);
+                    let sum = 0;
+                    for(let i=0; i<dataArray.length; i++) sum += dataArray[i];
+                    let avg = sum / dataArray.length;
+                    if (avg > 50) { 
+                        extinguish();
+                        stream.getTracks().forEach(t => t.stop());
+                    } else { requestAnimationFrame(detectBlow); }
+                }
+                detectBlow();
+            } catch (err) { alert("Nyalakan mic ya cantik!"); }
+        }
+
+        function extinguish() {
+            flames.forEach((f, i) => {
+                setTimeout(() => {
+                    f.style.transition = '0.6s ease';
+                    f.style.opacity = '0';
+                    f.style.transform = 'scale(0) translateY(10px)';
+                }, i * 200);
+            });
+            setTimeout(() => {
+                const cakeSection = document.getElementById('cake-section');
+                cakeSection.style.opacity = '0';
+                cakeSection.style.transition = '1s';
+                setTimeout(() => {
+                    cakeSection.classList.add('hidden');
+                    createPhotoHeart();
+                }, 1000);
+            }, 1200);
+        }
+
+        function showFinalCard() {
+            document.getElementById('btn-next-step').classList.add('hidden');
+            const card = document.getElementById('card');
+            card.classList.remove('hidden');
+            card.style.animation = 'fadeIn 2s forwards';
+            launchSurprise();
+        }
+
+        function launchSurprise() {
+            var duration = 5 * 1000;
+            var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff85a2', '#ffffff'] });
+                confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff85a2', '#ffffff'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    </script>
+</body>
+  </html>
+  
