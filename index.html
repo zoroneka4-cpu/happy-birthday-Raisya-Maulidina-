@@ -40,7 +40,7 @@
             max-width: 350px;
         }
 
-        .btn-start, .btn-next, .btn-gift {
+        .btn-start, .btn-next {
             background: var(--main-pink);
             color: white;
             border: none;
@@ -53,13 +53,6 @@
             box-shadow: 0 5px 15px rgba(255, 133, 162, 0.4);
             text-decoration: none;
             display: inline-block;
-        }
-
-        .btn-gift {
-            background: #25d366; /* Warna khas WhatsApp */
-            margin-top: 15px;
-            font-size: 0.9rem;
-            padding: 10px 25px;
         }
 
         .btn-next {
@@ -156,7 +149,9 @@
             z-index: 5;
         }
 
-        .heart-photo.show { opacity: 1; }
+        .heart-photo.show {
+            opacity: 1;
+        }
 
         /* --- Card --- */
         #card {
@@ -182,8 +177,8 @@
 
     <div id="setup-section">
         <div class="welcome-card">
-            <h2 style="color: var(--dark-pink); font-size: 1.4rem;">Hai Cantik! ✨</h2>
-            <p>Ada kejutan spesial buat <b>Raissya Maulidina yang paling cantik</b> di tanggal 22 Maret.</p>
+            <h2 style="color: var(--dark-pink); font-size: 1.4rem;">Halo Raissya! ✨</h2>
+            <p>Ada kejutan spesial buat <b>Raissya Maulidina</b> di tanggal 22 Maret.</p>
             <p style="font-size: 0.9rem; color: #666;">Tolong nyalakan mic untuk membukanya!</p>
             <br>
             <button class="btn-start" onclick="startExperience()">Buka Kejutan 🎁</button>
@@ -191,7 +186,7 @@
     </div>
 
     <div id="cake-section" class="hidden">
-        <h2 style="color: var(--dark-pink);">Tiup lilinnya yaa cantikk! 🎂</h2>
+        <h2 style="color: var(--dark-pink);">Tiup lilinnya yaa! 🎂</h2>
         <div class="cake">
             <div class="candles-container">
                 <div class="candle"><div class="flame"></div></div>
@@ -213,14 +208,10 @@
         <h1 style="font-size: 1.5rem;">Happy Birthday, <br>Raissya Maulidina! 💖</h1>
         <p><b>22 Maret 2009 — 2026</b></p>
         <hr style="border:0; border-top:1px solid #eee; margin:15px 0;">
-        <p>Untuk perempuan <b>paling cantik</b>...</p>
+        <p>Untuk Raissya...</p>
         <p>Semoga di usiamu yang baru ini, setiap harimu penuh dengan tawa dan kebahagiaan. Teruslah menjadi inspirasi!
-          dan semoga kita bisa bertemu di masa depan ya sayang kuu❤️❤️
+          dan semoga kita bisa bertemu di masa depan yaa! ❤️❤️
         </p>
-        
-        <a href="https://wa.me/6285185926986?text=haii%20aku%20mau%20klaim%20hadianyaa" target="_blank" class="btn-gift">
-            Lihat Hadiah 🎁
-        </a>
         
         <br>
         <button class="btn-start" style="padding: 8px 20px; font-size: 0.7rem; margin-top: 15px; background: none; border: 1px solid pink; color: pink; box-shadow: none;" onclick="location.reload()">Ulangi ✨</button>
@@ -309,7 +300,7 @@
                     } else { requestAnimationFrame(detectBlow); }
                 }
                 detectBlow();
-            } catch (err) { alert("Nyalakan mic ya cantik!"); }
+            } catch (err) { alert("Nyalakan mic ya!"); }
         }
 
         function extinguish() {
